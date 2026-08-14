@@ -140,10 +140,11 @@ See [AGENTS.md](AGENTS.md) for the complete command and recovery contract.
 | Move and follow to workspace 1-9 | `Ctrl + Alt + 1-9` |
 | Move workspace left/down/up/right | `Alt + Shift + A` / `Alt + Shift + S` / `Alt + Shift + D` / `Alt + Shift + F` |
 
-### Resize and layout
-
 | Action | Shortcut |
 | --- | --- |
+| Agentic Pair-programming preset (BSP) | `Alt + P` or `wm preset pair` |
+| Grid preset | `Alt + G` or `wm preset grid` |
+| Focus / Monocle preset | `wm preset focus` |
 | Decrease/increase width | `Alt + H` / `Alt + L` |
 | Increase/decrease height | `Alt + U` / `Alt + I` |
 | Modal resize mode | `Alt + Y` |
@@ -191,9 +192,13 @@ Run the repeatable [focus QA matrix](docs/FOCUS_QA.md) before reporting or relea
 
 A new terminal may be required before updated `PATH` entries are visible.
 
-## Diagnose, reload, recover
+# Check for updates and upgrade in-place
+komorebi-update -CheckOnly
+komorebi-update -Force
+# Or via wm wrapper
+wm check-update
+wm update
 
-```powershell
 # Health and resolved paths
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$env:LOCALAPPDATA\Programs\KomorebiStarter\doctor.ps1" -Json
 

@@ -110,10 +110,13 @@ The CLI wrapper (`wm.cmd` -> `wm.ps1`) manages execution. It guarantees non-inte
 - `wm start`
 - `wm stop`
 - `wm status`: Returns a path and process snapshot; it is not a full health check.
-- `wm launch <terminal|firefox|explorer|obsidian|flow|cursor> [--resolve]`: Dry-runs path resolution with `--resolve` or executes the launcher.
+- `wm preset <pair|agent|grid|focus>`: Applies agentic workspace presets (pair-programming BSP, multi-tile grid, or focus/monocle mode)
+- `wm check-update`: Checks GitHub releases for upstream updates and returns structured JSON
+- `wm update [-Force]`: Performs an in-place safe upgrade of Komorebi Starter
 - `wm help`
 
-Display Scaling:
+Tools & Utilities:
+- `komorebi-update.ps1 [-CheckOnly] [-Force] [-Json]`: Standalone update engine for checking and executing in-place version upgrades
 - `change_scale.ps1 status`
 - `change_scale.ps1 up`
 - `change_scale.ps1 down`

@@ -64,6 +64,8 @@ Source: "{#SourceRoot}\scripts\wm.cmd"; DestDir: "{app}\payload\scripts"; Flags:
 Source: "{#SourceRoot}\scripts\wm-resize-mode.ps1"; DestDir: "{app}\payload\scripts"; Flags: ignoreversion
 Source: "{#SourceRoot}\scripts\KomorebiStarter.Common.ps1"; DestDir: "{app}\payload\scripts"; Flags: ignoreversion
 Source: "{#SourceRoot}\scripts\change_scale.ps1"; DestDir: "{app}\payload\scripts"; Flags: ignoreversion
+Source: "{#SourceRoot}\scripts\komorebi-update.ps1"; DestDir: "{app}\payload\scripts"; Flags: ignoreversion
+Source: "{#SourceRoot}\scripts\komorebi-update.cmd"; DestDir: "{app}\payload\scripts"; Flags: ignoreversion
 
 [UninstallRun]
 Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; Parameters: "-NoProfile -NonInteractive -ExecutionPolicy Bypass -File ""{app}\uninstall.ps1"" -Force -Quiet"; Flags: waituntilterminated runhidden; RunOnceId: "KomorebiStarterProductUninstall"; Check: ShouldRunProductUninstaller

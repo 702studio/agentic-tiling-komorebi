@@ -98,6 +98,8 @@ $RequiredFiles = @(
     "scripts/wm-resize-mode.ps1",
     "scripts/KomorebiStarter.Common.ps1",
     "scripts/change_scale.ps1",
+    "scripts/komorebi-update.ps1",
+    "scripts/komorebi-update.cmd",
     "scripts/New-ReleasePackage.ps1",
     "tests/Test-Repository.ps1"
 )
@@ -147,8 +149,8 @@ $AllowedPatterns = @(
     '^config/(?:komorebi|komorebi\.bar|komorebi\.bar\.jetbrains|applications\.local)\.json$',
     '^config/whkdrc$',
     '^scripts/FocusInterop\.cs$',
-    '^scripts/(?:start|doctor|FocusInterop|focus-diagnostics|wm|wm-resize-mode|KomorebiStarter\.Common|change_scale)\.ps1$',
-    '^scripts/wm\.cmd$'
+    '^scripts/(?:start|doctor|FocusInterop|focus-diagnostics|wm|wm-resize-mode|KomorebiStarter\.Common|change_scale|komorebi-update)\.ps1$',
+    '^scripts/(?:wm|komorebi-update)\.cmd$'
 )
 
 # Helper function to compute relative path under RepositoryRoot with forward slashes

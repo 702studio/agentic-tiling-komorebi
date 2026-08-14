@@ -96,7 +96,10 @@ Description: >-
   configuration, diagnostics, rollback, and a structured command wrapper for agents.
 Moniker: komorebi-starter
 Tags:
+- agentic-desktop
 - automation
+- coding-agents
+- developer-tools
 - komorebi
 - powershell
 - tiling-window-manager
@@ -125,6 +128,7 @@ InstallerSwitches:
 UpgradeBehavior: install
 Commands:
 - wm
+- komorebi-update
 Dependencies:
   PackageDependencies:
   - PackageIdentifier: LGUG2Z.komorebi

@@ -95,7 +95,12 @@ Invoke-TestCheck 'json-parsing-and-bom' {
 # 3. Personal path/name leakage check
 Invoke-TestCheck 'personal-leakage-prevention' {
     $files = Get-ChildItem -Path $repoRoot -File -Recurse |
-        Where-Object { $_.FullName -notmatch '[\\/]\.reference[\\/]' -and $_.FullName -notmatch '[\\/]\.git[\\/]' -and $_.Name -ne 'Test-Repository.ps1' }
+        Where-Object {
+            $_.FullName -notmatch '[\\/]\.reference[\\/]' -and
+            $_.FullName -notmatch '[\\/]\.git[\\/]' -and
+            $_.FullName -notmatch '[\\/](bin|obj|publish)[\\/]' -and
+            $_.Name -ne 'Test-Repository.ps1'
+        }
 
     $leakedCount = 0
     $details = @()
@@ -259,7 +264,11 @@ Invoke-TestCheck 'portable-application-rule-coverage' {
 # 4. Third-party binary restriction
 Invoke-TestCheck 'no-third-party-binaries' {
     $files = Get-ChildItem -Path $repoRoot -File -Recurse |
-        Where-Object { $_.FullName -notmatch '[\\/]\.reference[\\/]' -and $_.FullName -notmatch '[\\/]\.git[\\/]' }
+        Where-Object {
+            $_.FullName -notmatch '[\\/]\.reference[\\/]' -and
+            $_.FullName -notmatch '[\\/]\.git[\\/]' -and
+            $_.FullName -notmatch '[\\/](bin|obj|publish)[\\/]'
+        }
 
     $binaries = @($files | Where-Object { $_.Extension -in @('.exe', '.dll', '.msi', '.sys', '.bin') })
     if ($binaries.Count -gt 0) {
@@ -2309,8 +2318,8 @@ Invoke-TestCheck 'deterministic-release-build-test' {
                         '^config/(?:komorebi|komorebi\.bar|komorebi\.bar\.jetbrains|applications\.local)\.json$',
                         '^config/whkdrc$',
                         '^scripts/FocusInterop\.cs$',
-                        '^scripts/(?:start|doctor|FocusInterop|focus-diagnostics|wm|wm-resize-mode|KomorebiStarter\.Common|change_scale)\.ps1$',
-                        '^scripts/wm\.cmd$'
+                        '^scripts/(?:start|doctor|FocusInterop|focus-diagnostics|wm|wm-resize-mode|KomorebiStarter\.Common|change_scale|komorebi-update)\.ps1$',
+                        '^scripts/(?:wm|komorebi-update)\.cmd$'
                     )
 
                     $matched = $false
@@ -2349,7 +2358,9 @@ Invoke-TestCheck 'deterministic-release-build-test' {
                     'scripts/wm.cmd',
                     'scripts/wm-resize-mode.ps1',
                     'scripts/KomorebiStarter.Common.ps1',
-                    'scripts/change_scale.ps1'
+                    'scripts/change_scale.ps1',
+                    'scripts/komorebi-update.ps1',
+                    'scripts/komorebi-update.cmd'
                 )
                 foreach ($requiredEntry in $requiredRuntimeEntries) {
                     if ($entryNames -notcontains $requiredEntry) {
@@ -2500,6 +2511,8 @@ Invoke-TestCheck 'distribution-audit-findings-static' {
         "scripts/wm-resize-mode.ps1",
         "scripts/KomorebiStarter.Common.ps1",
         "scripts/change_scale.ps1",
+        "scripts/komorebi-update.ps1",
+        "scripts/komorebi-update.cmd",
         "scripts/New-ReleasePackage.ps1",
         "tests/Test-Repository.ps1"
     )

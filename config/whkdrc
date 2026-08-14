@@ -25,6 +25,10 @@ alt + u : & "$env:USERPROFILE\bin\wm.ps1" resize height 5
 alt + i : & "$env:USERPROFILE\bin\wm.ps1" resize height -5
 alt + y : & "$env:USERPROFILE\bin\wm.ps1" resize-mode
 
+# Presets (Agentic pair-programming & Grid modes)
+alt + p : & "$env:USERPROFILE\bin\wm.ps1" preset pair
+alt + g : & "$env:USERPROFILE\bin\wm.ps1" preset grid
+
 # Layout and focused-window state
 alt + shift + space : komorebic toggle-window-container-behaviour
 ctrl + alt + space : & "$env:USERPROFILE\bin\wm.ps1" layout next

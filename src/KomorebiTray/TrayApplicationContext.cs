@@ -137,6 +137,15 @@ public class TrayApplicationContext : ApplicationContext
         itemConfigs.DropDownItems.Add("applications.local.json (App Rules)", null, (s, e) => _manager.OpenConfigFile("applications.local.json"));
         menu.Items.Add(itemConfigs);
 
+        var itemPresets = new ToolStripMenuItem("🤖 Agentic Presets");
+        itemPresets.DropDownItems.Add("Pair-Programming Layout (BSP)", null, (s, e) => _manager.ApplyPreset("pair"));
+        itemPresets.DropDownItems.Add("Grid Layout", null, (s, e) => _manager.ApplyPreset("grid"));
+        itemPresets.DropDownItems.Add("Focus / Monocle Mode", null, (s, e) => _manager.ApplyPreset("focus"));
+        menu.Items.Add(itemPresets);
+
+        var itemUpdate = new ToolStripMenuItem("🚀 Check for Updates / Upgrade", null, (s, e) => _manager.LaunchUpdate());
+        menu.Items.Add(itemUpdate);
+
         menu.Items.Add(new ToolStripSeparator());
 
         _menuAutoRecover = new ToolStripMenuItem("🛡️ Auto-Recover Bar (Watchdog)", null, (s, e) =>

@@ -267,6 +267,31 @@ public class KomorebiManager
         RunPowershellCommand("& 'komorebic.exe' toggle-pause");
     }
 
+    public void ApplyPreset(string presetName)
+    {
+        AddLog("INFO", $"Applying workspace preset: {presetName}");
+        RunPowershellCommand($"& '{WmScriptPath}' preset {presetName}");
+    }
+
+    public void LaunchUpdate()
+    {
+        AddLog("INFO", "Launching agentic-tiling-komorebi update...");
+        var updateScript = Path.Combine(BinPath, "komorebi-update.ps1");
+        if (!File.Exists(updateScript))
+        {
+            updateScript = Path.Combine(UserProfile, ".config", "komorebi", "komorebi-update.ps1");
+        }
+
+        var psi = new ProcessStartInfo
+        {
+            FileName = "powershell.exe",
+            Arguments = $"-NoProfile -ExecutionPolicy Bypass -Command \"& '{updateScript}'; Write-Host 'Press Enter to close...'; [void][Console]::ReadLine()\"",
+            UseShellExecute = true,
+            CreateNoWindow = false
+        };
+        Process.Start(psi);
+    }
+
     public string RunDoctor()
     {
         AddLog("INFO", "Running validate-komorebi.ps1 system doctor...");
