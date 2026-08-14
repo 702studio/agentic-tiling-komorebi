@@ -794,16 +794,16 @@ switch ($normalizedCommand) {
             { $_ -in @('pair', 'agent') } {
                 Invoke-KomorebicAction -Arguments @('change-layout', 'bsp')
                 Invoke-KomorebicAction -Arguments @('retile')
-                Write-Host "🤖 Activated Agentic Pair-Programming workspace layout (BSP)." -ForegroundColor Cyan
+                Write-Host "[+] Activated Agentic Pair-Programming workspace layout (BSP)." -ForegroundColor Cyan
             }
             'grid' {
                 Invoke-KomorebicAction -Arguments @('change-layout', 'grid')
                 Invoke-KomorebicAction -Arguments @('retile')
-                Write-Host "📐 Activated Grid workspace layout." -ForegroundColor Cyan
+                Write-Host "[+] Activated Grid workspace layout." -ForegroundColor Cyan
             }
             'focus' {
                 Invoke-KomorebicAction -Arguments @('toggle-monocle')
-                Write-Host "🔍 Toggled Focus / Monocle mode." -ForegroundColor Cyan
+                Write-Host "[+] Toggled Focus / Monocle mode." -ForegroundColor Cyan
             }
             default {
                 throw "Unknown preset '$presetName'. Available presets: pair, agent, grid, focus."

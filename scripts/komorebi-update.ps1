@@ -50,7 +50,9 @@ function Get-CurrentVersion {
             if ($manifest.version) {
                 return [string]$manifest.version
             }
-        } catch { }
+        } catch {
+            Write-Verbose "Could not parse version from manifest: $_"
+        }
     }
     return '0.3.1'
 }
@@ -121,15 +123,15 @@ if ($CheckOnly) {
         $resultObj | ConvertTo-Json -Depth 4
     } else {
         if (-not $latestInfo.Success) {
-            Write-Host "⚠️  Failed to check for updates: $($latestInfo.Error)" -ForegroundColor Yellow
+            Write-Host "[!] Failed to check for updates: $($latestInfo.Error)" -ForegroundColor Yellow
         } elseif ($updateAvailable) {
-            Write-Host "🚀 New update available!" -ForegroundColor Green
+            Write-Host "[+] New update available!" -ForegroundColor Green
             Write-Host "   Current version : v$currentVersion" -ForegroundColor Gray
             Write-Host "   Latest version  : v$($latestInfo.Version)" -ForegroundColor Cyan
             Write-Host "   Release notes   : $($latestInfo.HtmlUrl)" -ForegroundColor DarkGray
             Write-Host "`nRun 'komorebi-update' or 'wm update' to apply the update." -ForegroundColor Yellow
         } else {
-            Write-Host "✅ You are running the latest version (v$currentVersion)." -ForegroundColor Green
+            Write-Host "[OK] You are running the latest version (v$currentVersion)." -ForegroundColor Green
         }
     }
     return
@@ -140,13 +142,13 @@ if (-not $updateAvailable -and -not $Force) {
         $resultObj['status'] = 'already_up_to_date'
         $resultObj | ConvertTo-Json -Depth 4
     } else {
-        Write-Host "✅ You are already on the latest version (v$currentVersion)." -ForegroundColor Green
+        Write-Host "[OK] You are already on the latest version (v$currentVersion)." -ForegroundColor Green
         Write-Host "   Use 'komorebi-update -Force' to force reinstallation if needed." -ForegroundColor DarkGray
     }
     return
 }
 
-Write-Host "`n🔄 Updating agentic-tiling-komorebi..." -ForegroundColor Cyan
+Write-Host "`n[*] Updating agentic-tiling-komorebi..." -ForegroundColor Cyan
 Write-Host "   Current: v$currentVersion -> Latest: v$($latestInfo.Version)" -ForegroundColor Gray
 Write-Host "   Executing installer pipeline via bootstrap.ps1...`n" -ForegroundColor DarkGray
 
@@ -159,4 +161,4 @@ if ($Quiet) { $params['Quiet'] = $true }
 $scriptBlock = [ScriptBlock]::Create($bootstrapScript)
 & $scriptBlock @params
 
-Write-Host "`n🎉 agentic-tiling-komorebi successfully updated!" -ForegroundColor Green
+Write-Host "`n[+] agentic-tiling-komorebi successfully updated!" -ForegroundColor Green
