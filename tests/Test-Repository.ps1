@@ -2672,7 +2672,7 @@ Invoke-TestCheck 'agent-manifest-contract' {
     if ($agentManifest.packageIdentifier -cne '702studio.KomorebiStarter') {
         throw 'Agent manifest WinGet package identifier is invalid.'
     }
-    if ($agentManifest.installation.humanCommand -cne 'irm https://raw.githubusercontent.com/702studio/komorebi-starter/main/bootstrap.ps1 | iex') {
+    if ($agentManifest.installation.humanCommand -cne 'irm https://raw.githubusercontent.com/702studio/agentic-tiling-komorebi/main/bootstrap.ps1 | iex') {
         throw 'Agent manifest human bootstrap command drifted.'
     }
     if ($agentManifest.installation.agentCommandTemplate -notmatch '\[scriptblock\]::Create' -or

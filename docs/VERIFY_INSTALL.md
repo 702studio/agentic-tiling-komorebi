@@ -23,7 +23,7 @@ $work = Join-Path $env:TEMP ('KomorebiStarter-Verify-' + [guid]::NewGuid().ToStr
 New-Item -ItemType Directory -Path $work -ErrorAction Stop | Out-Null
 
 # Resolve the latest release and require one asset of each exact name.
-$release = Invoke-RestMethod -Uri 'https://api.github.com/repos/702studio/komorebi-starter/releases/latest'
+$release = Invoke-RestMethod -Uri 'https://api.github.com/repos/702studio/agentic-tiling-komorebi/releases/latest'
 $zipAssets = @($release.assets | Where-Object { [string]$_.name -ceq 'komorebi-starter.zip' })
 $hashAssets = @($release.assets | Where-Object { [string]$_.name -ceq 'komorebi-starter.zip.sha256' })
 if ($zipAssets.Count -ne 1 -or $hashAssets.Count -ne 1) {
@@ -53,7 +53,7 @@ if ($actualHash -ne $expectedHash) {
 }
 
 # Optional provenance check with GitHub CLI:
-# gh attestation verify $zipPath --repo 702studio/komorebi-starter
+# gh attestation verify $zipPath --repo 702studio/agentic-tiling-komorebi
 
 # Extract to a fresh directory and invoke the installer.
 $payload = Join-Path $work 'payload'
@@ -67,7 +67,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\install.ps1 -Preset Mi
 Agents can ask the public bootstrap for a no-mutation plan:
 
 ```powershell
-& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/702studio/komorebi-starter/main/bootstrap.ps1'))) -Version latest -WhatIf -NonInteractive -Quiet -Json
+& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/702studio/agentic-tiling-komorebi/main/bootstrap.ps1'))) -Version latest -WhatIf -NonInteractive -Quiet -Json
 ```
 
 For an actual unattended install, remove `-WhatIf`. Winget or Windows may still request elevation for a dependency.

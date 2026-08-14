@@ -45,8 +45,8 @@ function Assert-RegularPathAncestors {
 $packageIdentifier = '702studio.KomorebiStarter'
 $manifestVersion = '1.10.0'
 $tag = "v$Version"
-$releaseUrl = "https://github.com/702studio/komorebi-starter/releases/tag/$tag"
-$installerUrl = "https://github.com/702studio/komorebi-starter/releases/download/$tag/komorebi-starter-setup.exe"
+$releaseUrl = "https://github.com/702studio/agentic-tiling-komorebi/releases/tag/$tag"
+$installerUrl = "https://github.com/702studio/agentic-tiling-komorebi/releases/download/$tag/komorebi-starter-setup.exe"
 $outputDir = [IO.Path]::GetFullPath($OutputRoot)
 $manifestDir = [IO.Path]::GetFullPath((Join-Path $outputDir "manifests\7\702studio\KomorebiStarter\$Version"))
 $outputPrefix = $outputDir.TrimEnd('\', '/') + [IO.Path]::DirectorySeparatorChar
@@ -84,12 +84,12 @@ PackageVersion: $Version
 PackageLocale: en-US
 Publisher: 702studio
 PublisherUrl: https://github.com/702studio
-PublisherSupportUrl: https://github.com/702studio/komorebi-starter/issues
+PublisherSupportUrl: https://github.com/702studio/agentic-tiling-komorebi/issues
 Author: 702studio
 PackageName: Komorebi Starter
-PackageUrl: https://github.com/702studio/komorebi-starter
+PackageUrl: https://github.com/702studio/agentic-tiling-komorebi
 License: MIT
-LicenseUrl: https://github.com/702studio/komorebi-starter/blob/$tag/LICENSE
+LicenseUrl: https://github.com/702studio/agentic-tiling-komorebi/blob/$tag/LICENSE
 ShortDescription: Agent-friendly komorebi, whkd, masir, and komorebi-bar baseline.
 Description: >-
   A transactional, keyboard-driven Windows 11 desktop baseline with deterministic
