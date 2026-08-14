@@ -26,6 +26,8 @@ $allowedDestinations = @(
     (Join-Path $installDir 'wm-resize-mode.ps1'),
     (Join-Path $installDir 'start.ps1'),
     (Join-Path $installDir 'change_scale.ps1'),
+    (Join-Path $installDir 'komorebi-update.ps1'),
+    (Join-Path $installDir 'komorebi-update.cmd'),
     (Join-Path $installDir 'doctor.ps1'),
     (Join-Path $installDir 'KomorebiStarter.Common.ps1'),
     (Join-Path $installDir 'restore.ps1'),
@@ -518,6 +520,8 @@ function Assert-BackupRootValid {
             (Join-Path $ExpectedInstallDir 'wm-resize-mode.ps1'),
             (Join-Path $ExpectedInstallDir 'start.ps1'),
             (Join-Path $ExpectedInstallDir 'change_scale.ps1'),
+            (Join-Path $ExpectedInstallDir 'komorebi-update.ps1'),
+            (Join-Path $ExpectedInstallDir 'komorebi-update.cmd'),
             (Join-Path $ExpectedInstallDir 'doctor.ps1'),
             (Join-Path $ExpectedInstallDir 'KomorebiStarter.Common.ps1'),
             (Join-Path $ExpectedInstallDir 'restore.ps1'),
@@ -536,10 +540,18 @@ function Assert-BackupRootValid {
             (Get-CanonicalPath (Join-Path $ExpectedInstallDir 'FocusInterop.ps1')),
             (Get-CanonicalPath (Join-Path $ExpectedInstallDir 'focus-diagnostics.ps1'))
         )
-        if ([int]$sVerProp.Value -eq 1 -and
-            $filesList.Count -ne $allowedCanonical.Count -and
-            $filesList.Count -ne ($allowedCanonical.Count - $legacyV020Additions.Count)) {
-            throw "File entry count ($($filesList.Count)) does not match expected allowed destinations count ($($allowedCanonical.Count)) or legacy v0.2.0 profile"
+        $legacyV031Additions = @(
+            (Get-CanonicalPath (Join-Path $ExpectedInstallDir 'komorebi-update.ps1')),
+            (Get-CanonicalPath (Join-Path $ExpectedInstallDir 'komorebi-update.cmd'))
+        )
+        $allowedCounts = @(
+            $allowedCanonical.Count,
+            ($allowedCanonical.Count - $legacyV031Additions.Count),
+            ($allowedCanonical.Count - $legacyV020Additions.Count),
+            ($allowedCanonical.Count - $legacyV031Additions.Count - $legacyV020Additions.Count)
+        )
+        if ([int]$sVerProp.Value -eq 1 -and ($allowedCounts -notcontains $filesList.Count)) {
+            throw "File entry count ($($filesList.Count)) does not match expected allowed destinations count ($($allowedCanonical.Count)) or legacy file profile"
         }
 
         $seenPaths = @{}

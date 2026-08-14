@@ -773,6 +773,43 @@ switch ($normalizedCommand) {
         Start-DetachedScript -Path $script:StartScript -Arguments @('-StopOnly', '-DelayMilliseconds', '300')
         Write-ActionResult -Name $normalizedCommand
     }
+    'update' {
+        $updateScript = Join-Path $PSScriptRoot 'komorebi-update.ps1'
+        if (-not (Test-Path -LiteralPath $updateScript)) {
+            throw "Update script not found: $updateScript"
+        }
+        & $updateScript @ArgumentList
+    }
+    'check-update' {
+        $updateScript = Join-Path $PSScriptRoot 'komorebi-update.ps1'
+        if (-not (Test-Path -LiteralPath $updateScript)) {
+            throw "Update script not found: $updateScript"
+        }
+        & $updateScript -CheckOnly @ArgumentList
+    }
+    'preset' {
+        Assert-ArgumentCount -Minimum 1 -Usage 'preset <pair|agent|grid|focus>'
+        $presetName = $ArgumentList[0].ToLowerInvariant()
+        switch ($presetName) {
+            { $_ -in @('pair', 'agent') } {
+                Invoke-KomorebicAction -Arguments @('change-layout', 'bsp')
+                Invoke-KomorebicAction -Arguments @('retile')
+                Write-Host "🤖 Activated Agentic Pair-Programming workspace layout (BSP)." -ForegroundColor Cyan
+            }
+            'grid' {
+                Invoke-KomorebicAction -Arguments @('change-layout', 'grid')
+                Invoke-KomorebicAction -Arguments @('retile')
+                Write-Host "📐 Activated Grid workspace layout." -ForegroundColor Cyan
+            }
+            'focus' {
+                Invoke-KomorebicAction -Arguments @('toggle-monocle')
+                Write-Host "🔍 Toggled Focus / Monocle mode." -ForegroundColor Cyan
+            }
+            default {
+                throw "Unknown preset '$presetName'. Available presets: pair, agent, grid, focus."
+            }
+        }
+    }
     'status' {
         $processes = Get-Process -Name komorebi, komorebi-bar, whkd, masir, glazewm, zebar -ErrorAction SilentlyContinue |
             Select-Object ProcessName, Id, StartTime
@@ -800,8 +837,9 @@ wm move-workspace <left|right|up|down>
 wm launch <terminal|firefox|explorer|obsidian|flow|cursor> [--resolve]
 wm resize <width|height> <signed-percent>
 wm layout <fair|fair-horizontal|columns|rows|previous|next>
+wm preset <pair|agent|grid|focus>
 wm float | fullscreen | monocle | manage | unmanage | pause | reload | restore
-wm start | stop | restart | status
+wm start | stop | restart | status | update | check-update
 '@
     }
     default {

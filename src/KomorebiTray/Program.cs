@@ -28,27 +28,22 @@ internal static class Program
             try { File.AppendAllText(logPath, $"[{DateTime.Now:O}] ThreadException: {e.Exception}\n"); } catch { }
         };
 
-        bool hasMutex = false;
+        bool createdNew = false;
         try
         {
-            _singleInstanceMutex = new Mutex(true, "Local\\TolgaOzisik.KomorebiTrayHub", out bool createdNew);
-            hasMutex = createdNew;
-            if (!hasMutex)
-            {
-                hasMutex = _singleInstanceMutex.WaitOne(500, false);
-            }
+            _singleInstanceMutex = new Mutex(true, "TolgaOzisik.KomorebiTrayHub.Singleton", out createdNew);
         }
         catch (AbandonedMutexException)
         {
-            hasMutex = true;
+            createdNew = true;
         }
         catch (Exception ex)
         {
             try { File.AppendAllText(logPath, $"[{DateTime.Now:O}] Mutex exception: {ex.Message}\n"); } catch { }
-            hasMutex = true;
+            createdNew = true;
         }
 
-        if (!hasMutex)
+        if (!createdNew)
         {
             try { File.AppendAllText(logPath, $"[{DateTime.Now:O}] Another instance is already running; exiting.\n"); } catch { }
             return;
@@ -67,7 +62,7 @@ internal static class Program
         }
         finally
         {
-            if (_singleInstanceMutex != null && hasMutex)
+            if (_singleInstanceMutex != null && createdNew)
             {
                 try { _singleInstanceMutex.ReleaseMutex(); } catch { }
                 _singleInstanceMutex.Dispose();
