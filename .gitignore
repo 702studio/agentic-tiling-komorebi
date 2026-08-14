@@ -1,9 +1,16 @@
+# Build outputs
+src/**/bin/
+src/**/obj/
+dist/
+
 # Ignore the read-only migration reference evidence
 .reference/
 
 # Ignore local temporary or runtime files
 *.tmp
 *.log
+*.stackdump
+*.dmp
 temp_setdpi.exe
 
 # Ignore local backup folders
@@ -15,3 +22,7 @@ install-manifest.json
 
 # User config environment local files (if any get created in workspace)
 .config/
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
