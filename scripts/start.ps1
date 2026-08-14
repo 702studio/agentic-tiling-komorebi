@@ -1,6 +1,7 @@
 [CmdletBinding()]
 param(
     [switch]$Restart,
+    [switch]$RestartBar,
     [switch]$StopOnly,
     [switch]$CleanState,
     [ValidateRange(0, 10000)]
@@ -159,6 +160,34 @@ try {
     }
     if (-not (Test-Path -LiteralPath $barConfig -PathType Leaf)) {
         throw "Komorebi bar configuration not found: $barConfig"
+    }
+
+    if ($RestartBar) {
+        Get-Process -Name 'komorebi-bar' -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+        Start-Sleep -Milliseconds 150
+        $quotedBarConfig = '"' + $barConfig + '"'
+        Initialize-FocusInterop
+        $startupLogHome = Join-Path $stateHome 'logs'
+        $barStdoutPath = Join-Path $startupLogHome 'komorebi-bar.stdout.log'
+        $barStderrPath = Join-Path $startupLogHome 'komorebi-bar.stderr.log'
+        $barProcessId = [KomorebiStarter.NativeProcess]::StartDetached(
+            $bar,
+            ('--config ' + $quotedBarConfig),
+            (Split-Path -Parent $bar),
+            $barStdoutPath,
+            $barStderrPath)
+        $barWindowPolicy = Wait-KomorebiBarWindowPolicy
+
+        [pscustomobject]@{
+            productId = $productId
+            schemaVersion = $schemaVersion
+            ok = $true
+            command = 'restart-bar'
+            barConfig = $barConfig
+            barWindowPolicy = $barWindowPolicy
+            processes = @(Get-Process -Name 'komorebi-bar' -ErrorAction SilentlyContinue | Select-Object ProcessName, Id)
+        } | ConvertTo-Json -Depth 5
+        return
     }
 
     # Temporarily prepend resolved command paths to env:path if not present
