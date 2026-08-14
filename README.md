@@ -1,13 +1,14 @@
 <div align="center">
 
-# Komorebi Starter
+# ⚡ Agentic Tiling Window Manager for Windows 11
+### Powered by Komorebi, Native Tray Hub & Auto-Recovery Watchdog
 
-**A deterministic, keyboard-driven Windows 11 desktop for people and coding agents.**
+**A deterministic, keyboard-driven Agentic Tiling Window Manager for Windows 11 — built for humans and autonomous coding agents.**
 
-Komorebi, whkd, masir, and komorebi-bar, assembled into one reversible baseline.
+Komorebi, whkd, masir, native C# Tray Hub, and komorebi-bar, assembled into one reversible baseline.
 
-[![CI](https://github.com/702studio/komorebi-starter/actions/workflows/ci.yml/badge.svg)](https://github.com/702studio/komorebi-starter/actions/workflows/ci.yml)
-[![Latest release](https://img.shields.io/github/v/release/702studio/komorebi-starter?style=flat-square&label=release&color=238636)](https://github.com/702studio/komorebi-starter/releases/latest)
+[![CI](https://github.com/702studio/agentic-tiling-komorebi/actions/workflows/ci.yml/badge.svg)](https://github.com/702studio/agentic-tiling-komorebi/actions/workflows/ci.yml)
+[![Latest release](https://img.shields.io/github/v/release/702studio/agentic-tiling-komorebi?style=flat-square&label=release&color=238636)](https://github.com/702studio/agentic-tiling-komorebi/releases/latest)
 ![Windows 11](https://img.shields.io/badge/Windows-11-0969DA?style=flat-square)
 [![Project license](https://img.shields.io/badge/project-MIT-1F2328?style=flat-square)](LICENSE)
 
@@ -23,7 +24,7 @@ Komorebi, whkd, masir, and komorebi-bar, assembled into one reversible baseline.
 ## See it run
 
 <p align="center">
-  <a href="https://github.com/702studio/komorebi-starter/releases/download/v0.3.1/komorebi-starter-sandbox-tutorial-v2.mp4">
+  <a href="https://github.com/702studio/agentic-tiling-komorebi/releases/download/v0.3.1/komorebi-starter-sandbox-tutorial-v2.mp4">
     <img src="docs/assets/sandbox-tutorial-v2.gif" width="100%" alt="A real Windows Sandbox tutorial showing a clean desktop, the one-command Komorebi Starter installation, verified four-window and six-window Grid layouts, workspace changes, retile behavior, and an agent-issued workspace command.">
   </a>
 </p>
@@ -47,7 +48,7 @@ and 3x2 Grid states are verified from Komorebi's measured window rectangles.
 Open **Windows PowerShell** and run:
 
 ```powershell
-irm https://raw.githubusercontent.com/702studio/komorebi-starter/main/bootstrap.ps1 | iex
+irm https://raw.githubusercontent.com/702studio/agentic-tiling-komorebi/main/bootstrap.ps1 | iex
 ```
 
 > [!IMPORTANT]
@@ -60,13 +61,13 @@ irm https://raw.githubusercontent.com/702studio/komorebi-starter/main/bootstrap.
 Use JSON-only output, non-interactive execution, and a version you can pin:
 
 ```powershell
-& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/702studio/komorebi-starter/main/bootstrap.ps1'))) -Version latest -NonInteractive -Quiet -Json
+& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/702studio/agentic-tiling-komorebi/main/bootstrap.ps1'))) -Version latest -NonInteractive -Quiet -Json
 ```
 
 Inspect the plan without changing the system:
 
 ```powershell
-& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/702studio/komorebi-starter/main/bootstrap.ps1'))) -Version latest -WhatIf -NonInteractive -Quiet -Json
+& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/702studio/agentic-tiling-komorebi/main/bootstrap.ps1'))) -Version latest -WhatIf -NonInteractive -Quiet -Json
 ```
 
 Add `-MigrateFromGlazeWM` for an explicit GlazeWM takeover or `-InstallFonts` for JetBrains Mono Nerd Font. The migration preserves existing GlazeWM files while disabling its startup task so two window managers cannot start together.

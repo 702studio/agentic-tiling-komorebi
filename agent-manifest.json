@@ -3,16 +3,16 @@
   "productId": "702studio.komorebi-starter",
   "packageIdentifier": "702studio.KomorebiStarter",
   "name": "Komorebi Starter",
-  "repository": "https://github.com/702studio/komorebi-starter",
+  "repository": "https://github.com/702studio/agentic-tiling-komorebi",
   "platform": {
     "os": "Windows",
     "minimumVersion": "10.0.22000",
     "shell": "Windows PowerShell 5.1"
   },
   "installation": {
-    "humanCommand": "irm https://raw.githubusercontent.com/702studio/komorebi-starter/main/bootstrap.ps1 | iex",
-    "agentCommandTemplate": "& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/702studio/komorebi-starter/main/bootstrap.ps1'))) -Version <version-or-latest> -NonInteractive -Quiet -Json",
-    "dryRunCommand": "& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/702studio/komorebi-starter/main/bootstrap.ps1'))) -Version latest -WhatIf -NonInteractive -Quiet -Json",
+    "humanCommand": "irm https://raw.githubusercontent.com/702studio/agentic-tiling-komorebi/main/bootstrap.ps1 | iex",
+    "agentCommandTemplate": "& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/702studio/agentic-tiling-komorebi/main/bootstrap.ps1'))) -Version <version-or-latest> -NonInteractive -Quiet -Json",
+    "dryRunCommand": "& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/702studio/agentic-tiling-komorebi/main/bootstrap.ps1'))) -Version latest -WhatIf -NonInteractive -Quiet -Json",
     "winget": {
       "packageIdentifier": "702studio.KomorebiStarter",
       "discoveryCommand": "winget show --exact --id 702studio.KomorebiStarter",
