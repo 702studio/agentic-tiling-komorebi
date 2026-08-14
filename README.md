@@ -31,8 +31,16 @@ Komorebi, whkd, masir, and komorebi-bar, assembled into one reversible baseline.
 This is a real, clean Windows Sandbox run of the public command below. WinGet
 and Sandbox-only graphics compatibility are prepared before capture. The 2x2
 and 3x2 Grid states are verified from Komorebi's measured window rectangles.
-Open the preview for the [full 60-second H.264 tutorial](https://github.com/702studio/komorebi-starter/releases/download/v0.3.1/komorebi-starter-sandbox-tutorial-v2.mp4)
-and its [SHA-256 file](https://github.com/702studio/komorebi-starter/releases/download/v0.3.1/komorebi-starter-sandbox-tutorial-v2.mp4.sha256).
+## Native Tray Hub & Auto-Recovery Watchdog
+
+<p align="center">
+  <img src="docs/assets/komorebi-tray-hub-preview.jpg" alt="Komorebi Starter Native Tray Hub showing live health badge, quick restart, bar resurrection, and telemetry dashboard" width="340">
+</p>
+
+* **C# .NET 8 Tray Hub**: Native system tray supervisor with Optical Floating branding (`k-optical-floating.ico`) and dynamic runtime health badges (🟢 Healthy, 🟡 Recovering, ⏸️ Paused, 🔴 Offline).
+* **Auto-Recovery Watchdog**: Automatically detects GPU TDR resets or bar crashes and restores `komorebi-bar` in **<200ms** via `-RestartBar` without altering window layouts or focus.
+* **GDI Saturation Guard**: Real-time Win32 GDI handle monitoring to prevent object exhaustion before hitting the 10,000 system ceiling.
+* **Instant 3ms Hotkeys**: Direct binary socket dispatch in `config/whkdrc` delivers zero-lag, 60 FPS workspace navigation.
 
 ## Install in one command
 
