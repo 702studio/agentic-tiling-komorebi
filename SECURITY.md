@@ -4,7 +4,7 @@
 Only the latest release of `komorebi-starter` is actively supported for security updates.
 
 ## Reporting a Vulnerability
-If you identify a security vulnerability, do not open a public issue. Report it privately using the repository's security advisory form: https://github.com/702studio/komorebi-starter/security/advisories/new
+If you identify a security vulnerability, do not open a public issue. Report it privately using the repository's security advisory form: https://github.com/702studio/agentic-tiling-komorebi/security/advisories/new
 
 ## Trust Boundaries
 - **Raw-main trust**: The one-liner executes `bootstrap.ps1` from the mutable `main` branch. That script is not authenticated by the release checksum; review it or pin a trusted commit before execution when stronger control is required.

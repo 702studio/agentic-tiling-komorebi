@@ -9,7 +9,7 @@ Read [`agent-manifest.json`](agent-manifest.json) before installation. After ins
 Install the latest verified release non-interactively:
 
 ```powershell
-& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/702studio/komorebi-starter/main/bootstrap.ps1'))) -Version latest -NonInteractive -Quiet -Json
+& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/702studio/agentic-tiling-komorebi/main/bootstrap.ps1'))) -Version latest -NonInteractive -Quiet -Json
 ```
 
 Replace `latest` with an immutable tag such as `v0.3.1` when reproducibility is required. Add `-WhatIf` for a plan, `-MigrateFromGlazeWM` for explicit takeover, or `-InstallFonts` for the optional font. Do not use `-Force` unless foreign or user-edited target files have been reviewed and backed up.

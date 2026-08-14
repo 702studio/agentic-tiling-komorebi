@@ -110,7 +110,7 @@ if (-not $canonicalTempDir.StartsWith($canonicalTemp, [System.StringComparison]:
     throw "Security validation failed: Temporary directory path is outside the system TEMP directory boundary."
 }
 
-$repo = '702studio/komorebi-starter'
+$repo = '702studio/agentic-tiling-komorebi'
 if ($Version -eq 'latest') {
     $releaseUrl = "https://api.github.com/repos/$repo/releases/latest"
 } else {
