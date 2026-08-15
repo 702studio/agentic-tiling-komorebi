@@ -12,7 +12,7 @@
   "default_workspace_padding": 2,
   "default_container_padding": 2,
   "resize_delta": 50,
-  "mouse_follows_focus": false,
+  "mouse_follows_focus": true,
   "toggle_float_placement": "CenterAndResize",
   "float_rule_placement": "Center",
   "border": true,
