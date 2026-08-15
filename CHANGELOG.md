@@ -4,7 +4,31 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-## [0.3.1] - 2026-07-16
+## [0.4.4] - 2026-08-15
+
+### Added
+- Comprehensive FAQ and Troubleshooting guide (`docs/FAQ.md`) detailing window capturing, UIPI Administrator privilege isolation, shortcut mapping, watchdog self-healing states, and mouse hover behavior.
+- Updated `README.md` and `AGENTS.md` with verified shortcut tables and direct references to `docs/FAQ.md`.
+
+### Fixed
+- Added `CREATE_BREAKAWAY_FROM_JOB` (0x01000000) flag in `NativeProcess.StartDetached` in `FocusInterop.cs` to prevent parent job objects from terminating detached background processes.
+
+## [0.4.3] - 2026-08-15
+
+### Added
+- Window management hotkeys: `Alt + M` (force manage into grid) and `Alt + Shift + M` (unmanage window).
+- Full-stack self-healing watchdog support for `whkd` in `KomorebiManager.cs`, automatically restarting the keyboard daemon within 5 seconds if dropped.
+
+### Fixed
+- Eliminated duplicate `Alt + Shift + F` chord collision in `whkdrc` to prevent hotkey daemon crashes on startup.
+- Sanitized tray singleton mutex and activation event names to prevent name collisions.
+
+## [0.4.2] - 2026-08-15
+
+### Added
+- Enabled `mouse_follows_focus: true` in `komorebi.json` for automatic hover state activation.
+- Ultra-low latency (2ms) directional focus hotkeys (`Alt + Left/Right/Up/Down`).
+- `Alt + F` instant Monocle (workspace fullscreen) hotkey.
 
 ### Changed
 - Reframed the repository front page around the one-command install, deterministic agent workflow, real Windows focus behavior, and explicit trust boundaries.

@@ -1,6 +1,6 @@
 # Agent Integration Guide
 
-This document details command-line outputs, recovery protocols, and verification guidelines for automated integrations.
+This document details command-line outputs, recovery protocols, and verification guidelines for automated integrations. For troubleshooting and common user/agent edge cases, see [docs/FAQ.md](docs/FAQ.md).
 
 ## Machine Contract
 
