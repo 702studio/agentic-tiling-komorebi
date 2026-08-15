@@ -42,6 +42,8 @@ ctrl + alt + shift + space : & "$env:USERPROFILE\bin\wm.ps1" layout previous
 alt + oem_5 : komorebic toggle-workspace-layer
 alt + space : komorebic toggle-float
 alt + t : komorebic toggle-float
+alt + m : komorebic manage
+alt + shift + m : komorebic unmanage
 alt + f : komorebic toggle-monocle
 alt + shift + f : komorebic toggle-maximize
 alt + n : komorebic minimize
