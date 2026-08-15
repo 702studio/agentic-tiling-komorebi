@@ -25,7 +25,13 @@ if ($DelayMilliseconds -gt 0) {
 }
 
 $mutex = [Threading.Mutex]::new($false, 'Local\KomorebiStarter.Lifecycle')
-if (-not $mutex.WaitOne([TimeSpan]::FromSeconds(30))) {
+$hasMutex = $false
+try {
+    $hasMutex = $mutex.WaitOne([TimeSpan]::FromSeconds(8))
+} catch [Threading.AbandonedMutexException] {
+    $hasMutex = $true
+}
+if (-not $hasMutex) {
     $mutex.Dispose()
     throw 'Another window-manager lifecycle operation is still running.'
 }
@@ -140,8 +146,8 @@ try {
     # Verify and stop GlazeWM environment if allowed
     Stop-GlazeEnvironment
 
-    $alreadyRunning = Get-Process -Name komorebi -ErrorAction SilentlyContinue
-    if ($Restart -or $alreadyRunning) {
+    $hasLingering = Get-Process -Name komorebi, whkd, masir, komorebi-bar -ErrorAction SilentlyContinue
+    if ($Restart -or $hasLingering) {
         Stop-KomorebiEnvironment
     }
 
