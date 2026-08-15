@@ -70,7 +70,40 @@ public class TrayApplicationContext : ApplicationContext
         _notifyIcon.Visible = true;
         _timer.Start();
 
+        _manager.EnsureEnvironmentStarted();
+        StartActivationListener();
+
         _manager.AddLog("INFO", "Komorebi Tray Hub initialized with Optical Floating branding & Watchdog supervisor.");
+    }
+
+    private void StartActivationListener()
+    {
+        try
+        {
+            var showEvent = new EventWaitHandle(false, EventResetMode.AutoReset, "TolgaOzisik.KomorebiTrayHub.ShowEvent");
+            var thread = new Thread(() =>
+            {
+                while (true)
+                {
+                    if (showEvent.WaitOne())
+                    {
+                        try
+                        {
+                            if (_dashboard.IsHandleCreated)
+                            {
+                                _dashboard.BeginInvoke(new Action(() => ShowDashboard()));
+                            }
+                        }
+                        catch { }
+                    }
+                }
+            })
+            {
+                IsBackground = true
+            };
+            thread.Start();
+        }
+        catch { }
     }
 
     private static Icon? ResolveBaseIcon()
