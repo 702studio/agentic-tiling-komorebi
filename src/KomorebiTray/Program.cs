@@ -43,9 +43,17 @@ internal static class Program
             createdNew = true;
         }
 
+        try { File.AppendAllText(@"C:\Users\tolgaozisik\tray_debug.log", $"[{DateTime.Now:O}] Main reached. createdNew={createdNew}\n"); } catch { }
+
         if (!createdNew)
         {
-            try { File.AppendAllText(logPath, $"[{DateTime.Now:O}] Another instance is already running; exiting.\n"); } catch { }
+            try
+            {
+                File.AppendAllText(logPath, $"[{DateTime.Now:O}] Another instance is already running; activating existing instance.\n");
+                using var showEvent = EventWaitHandle.OpenExisting("TolgaOzisik.KomorebiTrayHub.ShowEvent");
+                showEvent.Set();
+            }
+            catch { }
             return;
         }
 

@@ -10,9 +10,45 @@ public class KomorebiManager
     private static readonly string WgpuBarPath = Path.Combine(BinPath, "komorebi-wgpu-v0.1.41", "komorebi-bar.exe");
     private static readonly string SwitzerBarConfig = Path.Combine(ConfigHome, "komorebi.bar.json");
     private static readonly string JetBrainsBarConfig = Path.Combine(ConfigHome, "komorebi.bar.jetbrains.json");
-    private static readonly string StartScriptPath = Path.Combine(BinPath, "start-komorebi.ps1");
-    private static readonly string WmScriptPath = Path.Combine(BinPath, "wm.ps1");
-    private static readonly string ValidateScriptPath = Path.Combine(BinPath, "validate-komorebi.ps1");
+
+    public static string ResolveStartScriptPath()
+    {
+        var localProg = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Programs", "KomorebiStarter", "start.ps1");
+        if (File.Exists(localProg)) return localProg;
+
+        var binStart = Path.Combine(BinPath, "start.ps1");
+        if (File.Exists(binStart)) return binStart;
+
+        var binStartKomorebi = Path.Combine(BinPath, "start-komorebi.ps1");
+        if (File.Exists(binStartKomorebi)) return binStartKomorebi;
+
+        return Path.Combine(BinPath, "start.ps1");
+    }
+
+    public static string ResolveDoctorScriptPath()
+    {
+        var localProg = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Programs", "KomorebiStarter", "doctor.ps1");
+        if (File.Exists(localProg)) return localProg;
+
+        var binDoctor = Path.Combine(BinPath, "doctor.ps1");
+        if (File.Exists(binDoctor)) return binDoctor;
+
+        var binValidate = Path.Combine(BinPath, "validate-komorebi.ps1");
+        if (File.Exists(binValidate)) return binValidate;
+
+        return Path.Combine(BinPath, "doctor.ps1");
+    }
+
+    public static string ResolveWmScriptPath()
+    {
+        var localProg = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Programs", "KomorebiStarter", "wm.ps1");
+        if (File.Exists(localProg)) return localProg;
+
+        var binWm = Path.Combine(BinPath, "wm.ps1");
+        if (File.Exists(binWm)) return binWm;
+
+        return Path.Combine(BinPath, "wm.ps1");
+    }
 
     public bool AutoRecoverBar { get; set; } = true;
     public bool ShowNotifications { get; set; } = true;
@@ -215,6 +251,26 @@ public class KomorebiManager
         }
     }
 
+    public void EnsureEnvironmentStarted()
+    {
+        var snapshot = GetHealthSnapshot();
+        var komorebiAlive = snapshot.Processes.Any(p => p.Name == "komorebi" && p.IsAlive);
+        var whkdAlive = snapshot.Processes.Any(p => p.Name == "whkd" && p.IsAlive);
+        var barAlive = snapshot.Processes.Any(p => p.Name == "komorebi-bar" && p.IsAlive);
+
+        if (!komorebiAlive || !whkdAlive || !barAlive)
+        {
+            AddLog("INFO", "WM environment not fully running on startup. Auto-launching stack...");
+            StartAll();
+        }
+    }
+
+    public void StartAll()
+    {
+        AddLog("INFO", "Starting Komorebi Window Manager environment...");
+        RunDetachedScript(ResolveStartScriptPath(), "-DelayMilliseconds 100");
+    }
+
     private bool RecoverBarInternal()
     {
         try
@@ -222,7 +278,7 @@ public class KomorebiManager
             var psi = new ProcessStartInfo
             {
                 FileName = "powershell.exe",
-                Arguments = $"-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File \"{StartScriptPath}\" -RestartBar",
+                Arguments = $"-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File \"{ResolveStartScriptPath()}\" -RestartBar",
                 UseShellExecute = false,
                 CreateNoWindow = true,
                 WindowStyle = ProcessWindowStyle.Hidden
@@ -246,7 +302,7 @@ public class KomorebiManager
     public void RestartAll()
     {
         AddLog("INFO", "User requested Full Restart (Nuke & Clean).");
-        RunDetachedScript(StartScriptPath, "-Restart -DelayMilliseconds 100");
+        RunDetachedScript(ResolveStartScriptPath(), "-Restart -DelayMilliseconds 100");
     }
 
     public void RestartBarOnly()
@@ -258,7 +314,7 @@ public class KomorebiManager
     public void StopAll()
     {
         AddLog("INFO", "User requested Stop All WM Processes.");
-        RunDetachedScript(StartScriptPath, "-StopOnly -DelayMilliseconds 100");
+        RunDetachedScript(ResolveStartScriptPath(), "-StopOnly -DelayMilliseconds 100");
     }
 
     public void TogglePause()
@@ -270,7 +326,7 @@ public class KomorebiManager
     public void ApplyPreset(string presetName)
     {
         AddLog("INFO", $"Applying workspace preset: {presetName}");
-        RunPowershellCommand($"& '{WmScriptPath}' preset {presetName}");
+        RunPowershellCommand($"& '{ResolveWmScriptPath()}' preset {presetName}");
     }
 
     public void LaunchUpdate()
@@ -294,13 +350,13 @@ public class KomorebiManager
 
     public string RunDoctor()
     {
-        AddLog("INFO", "Running validate-komorebi.ps1 system doctor...");
+        AddLog("INFO", "Running system doctor check...");
         try
         {
             var psi = new ProcessStartInfo
             {
                 FileName = "powershell.exe",
-                Arguments = $"-NoProfile -ExecutionPolicy Bypass -File \"{ValidateScriptPath}\"",
+                Arguments = $"-NoProfile -ExecutionPolicy Bypass -File \"{ResolveDoctorScriptPath()}\"",
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
