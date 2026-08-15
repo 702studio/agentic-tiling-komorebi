@@ -222,7 +222,7 @@ namespace KomorebiStarter
                         IntPtr.Zero,
                         IntPtr.Zero,
                         true,
-                        CreateNoWindow | ExtendedStartupInfoPresent,
+                        CreateNoWindow | ExtendedStartupInfoPresent | 0x01000000,
                         IntPtr.Zero,
                         workingDirectory,
                         ref startupInfo,

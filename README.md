@@ -113,32 +113,47 @@ wm state
 
 For asynchronous `wm reload` and `wm restart`, poll `wm state` with bounded retries. `wm reload` uses a controlled process restart because Komorebi can retain removed matching rules after an in-process configuration replacement.
 
-See [AGENTS.md](AGENTS.md) for the complete command and recovery contract.
+See [AGENTS.md](AGENTS.md) for the complete command and recovery contract, and [docs/FAQ.md](docs/FAQ.md) for troubleshooting and frequently asked questions.
 
 ## Controls
 
-### Navigate
+### Navigate & Focus (Instant 2ms Native IPC)
 
-| Action | Control |
+| Action | Shortcut / Control |
 | --- | --- |
-| Focus left/right/up/down from CLI | `wm focus left/right/up/down` |
-| Native application navigation | `Alt + Left/Right/Up/Down` (not bound by this setup) |
+| Directional window focus | `Alt + Left / Right / Up / Down` or `wm focus <dir>` |
 | Previous/next workspace | `Alt + J` / `Alt + K` |
 | Previous/next workspace, alternate | `Ctrl + Alt + Left` / `Ctrl + Alt + Right` |
 | Previous/next active workspace | `Alt + A` / `Alt + S` |
 | Last workspace | `Alt + D` |
 | Focus workspace 1-9 | `Alt + 1-9` |
 
+### Window Layout & Capturing
+
+| Action | Shortcut |
+| --- | --- |
+| **Force manage into tiling grid** | `Alt + M` |
+| **Unmanage from tiling grid** | `Alt + Shift + M` |
+| Toggle float / tiled mode | `Alt + Space` or `Alt + T` |
+| Toggle Monocle mode (fullscreen in workspace) | `Alt + F` |
+| Retile entire active workspace | `Alt + Shift + W` |
+| Minimize / close window | `Alt + N` / `Alt + Q` |
+| Toggle container stacking | `Alt + Shift + Space` |
+| Next/previous layout preset | `Ctrl + Alt + Space` / `Ctrl + Alt + Shift + Space` |
+| Cycle layer | `Alt + OEM_5` (backslash key) |
+
 ### Move windows and workspaces
 
 | Action | Shortcut |
 | --- | --- |
-| Move focused window | `Alt + Shift + Up/Down/Left/Right` |
+| Move focused window | `Alt + Shift + Up / Down / Left / Right` |
 | Send to previous/next workspace | `Alt + Shift + J` / `Alt + Shift + K` |
-| Send cycle, alternate | `Ctrl + Alt + Shift + Left/Right` |
+| Send cycle, alternate | `Ctrl + Alt + Shift + Left / Right` |
 | Send to workspace 1-9 | `Alt + Shift + 1-9` |
 | Move and follow to workspace 1-9 | `Ctrl + Alt + 1-9` |
 | Move workspace left/down/up/right | `Alt + Shift + A` / `Alt + Shift + S` / `Alt + Shift + D` / `Alt + Shift + F` |
+
+### Resizing & Presets
 
 | Action | Shortcut |
 | --- | --- |
@@ -148,13 +163,7 @@ See [AGENTS.md](AGENTS.md) for the complete command and recovery contract.
 | Decrease/increase width | `Alt + H` / `Alt + L` |
 | Increase/decrease height | `Alt + U` / `Alt + I` |
 | Modal resize mode | `Alt + Y` |
-| Toggle tiling direction | `Alt + Shift + Space` |
-| Next/previous layout | `Ctrl + Alt + Space` / `Ctrl + Alt + Shift + Space` |
-| Cycle layer | `Alt + OEM_5` (backslash key) |
-| Toggle float | `Alt + Space` or `Alt + T` |
-| Toggle fullscreen | `Alt + F` |
-| Minimize / close | `Alt + N` / `Alt + Q` |
-| Increase/decrease display scale | `Ctrl + Alt + Shift + Up/Down` |
+| Increase/decrease display scale | `Ctrl + Alt + Shift + Up / Down` |
 
 ### Lifecycle and launchers
 
@@ -163,11 +172,10 @@ See [AGENTS.md](AGENTS.md) for the complete command and recovery contract.
 | Stop / pause | `Alt + Shift + E` / `Alt + Shift + P` |
 | Restart | `Alt + Shift + Backspace` or `Alt + Shift + X` |
 | Reload through controlled restart | `Alt + Shift + R` |
-| Retile | `Alt + Shift + W` |
 | Terminal / Firefox / Explorer | `Alt + Return` / `Alt + B` / `Alt + E` |
 | Obsidian / Flow Launcher / Cursor | `Alt + O` / `Alt + R` / `Alt + C` |
 
-[`config/whkdrc`](config/whkdrc) is the exact source of truth for every chord.
+[`config/whkdrc`](config/whkdrc) is the exact source of truth for every chord. See [docs/FAQ.md](docs/FAQ.md) for common questions and troubleshooting.
 
 ## Focus behavior and Parsec
 
