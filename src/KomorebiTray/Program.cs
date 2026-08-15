@@ -31,7 +31,7 @@ internal static class Program
         bool createdNew = false;
         try
         {
-            _singleInstanceMutex = new Mutex(true, "TolgaOzisik.KomorebiTrayHub.Singleton", out createdNew);
+            _singleInstanceMutex = new Mutex(true, "KomorebiStarter.TrayHub.Singleton", out createdNew);
         }
         catch (AbandonedMutexException)
         {
@@ -43,14 +43,12 @@ internal static class Program
             createdNew = true;
         }
 
-        try { File.AppendAllText(@"C:\Users\tolgaozisik\tray_debug.log", $"[{DateTime.Now:O}] Main reached. createdNew={createdNew}\n"); } catch { }
-
         if (!createdNew)
         {
             try
             {
                 File.AppendAllText(logPath, $"[{DateTime.Now:O}] Another instance is already running; activating existing instance.\n");
-                using var showEvent = EventWaitHandle.OpenExisting("TolgaOzisik.KomorebiTrayHub.ShowEvent");
+                using var showEvent = EventWaitHandle.OpenExisting("KomorebiStarter.TrayHub.ShowEvent");
                 showEvent.Set();
             }
             catch { }

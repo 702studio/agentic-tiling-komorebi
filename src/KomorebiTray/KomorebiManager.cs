@@ -52,6 +52,7 @@ public class KomorebiManager
 
     public bool AutoRecoverBar { get; set; } = true;
     public bool AutoRecoverStack { get; set; } = true;
+    public bool AutoRecoverWhkd { get; set; } = true;
     public bool ShowNotifications { get; set; } = true;
     public bool IsManuallyStopped { get; set; } = false;
     public int RecoveryCount { get; private set; }
@@ -66,6 +67,7 @@ public class KomorebiManager
     private readonly object _logLock = new();
     private DateTime _lastRecoveryAttempt = DateTime.MinValue;
     private DateTime _lastStackRecoveryAttempt = DateTime.MinValue;
+    private DateTime _lastWhkdRecoveryAttempt = DateTime.MinValue;
     private bool _isStarting = false;
     private DateTime _startInitiated = DateTime.MinValue;
 
@@ -294,6 +296,28 @@ public class KomorebiManager
                 AddLog("ERROR", "Watchdog: Failed to resurrect komorebi-bar.");
             }
         }
+
+        // Case 3: Komorebi is alive but whkd (hotkeys) is missing -> Auto-resurrect whkd
+        if (komorebiAlive && !whkdAlive && AutoRecoverWhkd)
+        {
+            if ((DateTime.Now - _lastWhkdRecoveryAttempt).TotalSeconds < 5)
+                return;
+
+            _lastWhkdRecoveryAttempt = DateTime.Now;
+            AddLog("WARN", "Watchdog: whkd process is missing while komorebi is active. Restarting whkd...");
+            bool recovered = RecoverWhkdInternal();
+            if (recovered)
+            {
+                RecoveryCount++;
+                LastRecoveryTime = DateTime.Now;
+                AddLog("INFO", $"Watchdog: whkd successfully resurrected (Recovery #{RecoveryCount}).");
+                OnStackRecovered?.Invoke($"Komorebi Hotkey Daemon (whkd) recovered automatically. Total recoveries: {RecoveryCount}");
+            }
+            else
+            {
+                AddLog("ERROR", "Watchdog: Failed to resurrect whkd.");
+            }
+        }
     }
 
     public void EnsureEnvironmentStarted()
@@ -343,6 +367,36 @@ public class KomorebiManager
         catch (Exception ex)
         {
             AddLog("ERROR", $"Recovery exception: {ex.Message}");
+            return false;
+        }
+    }
+
+    private bool RecoverWhkdInternal()
+    {
+        try
+        {
+            var configHome = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".config", "komorebi");
+            var whkdrc = Path.Combine(configHome, "whkdrc");
+            var whkdExe = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "whkd", "bin", "whkd.exe");
+            if (!File.Exists(whkdExe))
+            {
+                whkdExe = "whkd.exe";
+            }
+
+            var psi = new ProcessStartInfo
+            {
+                FileName = whkdExe,
+                Arguments = File.Exists(whkdrc) ? $"--config \"{whkdrc}\"" : string.Empty,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+            psi.Environment["WHKD_CONFIG_HOME"] = configHome;
+            var proc = Process.Start(psi);
+            return proc != null && !proc.HasExited;
+        }
+        catch (Exception ex)
+        {
+            AddLog("ERROR", $"Failed to restart whkd: {ex.Message}");
             return false;
         }
     }

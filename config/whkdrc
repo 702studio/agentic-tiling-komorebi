@@ -45,7 +45,6 @@ alt + t : komorebic toggle-float
 alt + m : komorebic manage
 alt + shift + m : komorebic unmanage
 alt + f : komorebic toggle-monocle
-alt + shift + f : komorebic toggle-maximize
 alt + n : komorebic minimize
 alt + q : komorebic close
 

@@ -89,7 +89,7 @@ public class TrayApplicationContext : ApplicationContext
     {
         try
         {
-            var showEvent = new EventWaitHandle(false, EventResetMode.AutoReset, "TolgaOzisik.KomorebiTrayHub.ShowEvent");
+            var showEvent = new EventWaitHandle(false, EventResetMode.AutoReset, "KomorebiStarter.TrayHub.ShowEvent");
             var thread = new Thread(() =>
             {
                 while (true)
