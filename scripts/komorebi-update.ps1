@@ -157,6 +157,7 @@ $bootstrapScript = Invoke-RestMethod -Uri $bootstrapUrl -TimeoutSec 15
 $params = @{}
 if ($NonInteractive) { $params['NonInteractive'] = $true }
 if ($Quiet) { $params['Quiet'] = $true }
+if ($Force) { $params['Force'] = $true }
 
 $scriptBlock = [ScriptBlock]::Create($bootstrapScript)
 & $scriptBlock @params
