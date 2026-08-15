@@ -51,17 +51,23 @@ public class KomorebiManager
     }
 
     public bool AutoRecoverBar { get; set; } = true;
+    public bool AutoRecoverStack { get; set; } = true;
     public bool ShowNotifications { get; set; } = true;
+    public bool IsManuallyStopped { get; set; } = false;
     public int RecoveryCount { get; private set; }
     public DateTime? LastRecoveryTime { get; private set; }
 
     public event Action<string>? OnBarRecovered;
+    public event Action<string>? OnStackRecovered;
     public event Action<uint>? OnHighGdiWarning;
     public event Action<WatchdogLogEntry>? OnLogEntry;
 
     private readonly List<WatchdogLogEntry> _logs = new();
     private readonly object _logLock = new();
     private DateTime _lastRecoveryAttempt = DateTime.MinValue;
+    private DateTime _lastStackRecoveryAttempt = DateTime.MinValue;
+    private bool _isStarting = false;
+    private DateTime _startInitiated = DateTime.MinValue;
 
     public IReadOnlyList<WatchdogLogEntry> GetRecentLogs()
     {
@@ -192,17 +198,24 @@ public class KomorebiManager
             var psi = new ProcessStartInfo
             {
                 FileName = "komorebic.exe",
-                Arguments = "query is-paused",
+                Arguments = "state",
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
                 CreateNoWindow = true
             };
             using var proc = Process.Start(psi);
-            if (proc != null && proc.WaitForExit(500))
+            if (proc != null && proc.WaitForExit(600))
             {
-                var output = proc.StandardOutput.ReadToEnd().Trim().ToLowerInvariant();
-                return output == "true";
+                var output = proc.StandardOutput.ReadToEnd();
+                if (!string.IsNullOrWhiteSpace(output))
+                {
+                    using var doc = System.Text.Json.JsonDocument.Parse(output);
+                    if (doc.RootElement.TryGetProperty("is_paused", out var prop))
+                    {
+                        return prop.GetBoolean();
+                    }
+                }
             }
         }
         catch { }
@@ -220,17 +233,49 @@ public class KomorebiManager
             OnHighGdiWarning?.Invoke(snapshot.KomorebiGdiHandles);
         }
 
-        if (!AutoRecoverBar)
+        if (IsManuallyStopped)
             return;
 
-        // Check if Komorebi is alive but bar is missing
         var komorebiAlive = snapshot.Processes.Any(p => p.Name == "komorebi" && p.IsAlive);
+        var whkdAlive = snapshot.Processes.Any(p => p.Name == "whkd" && p.IsAlive);
         var barAlive = snapshot.Processes.Any(p => p.Name == "komorebi-bar" && p.IsAlive);
 
-        if (komorebiAlive && !barAlive)
+        if (komorebiAlive && whkdAlive && barAlive)
         {
-            // Debounce recovery attempts to avoid rapid loops if bar config is broken
-            if ((DateTime.Now - _lastRecoveryAttempt).TotalSeconds < 3)
+            _isStarting = false;
+        }
+
+        if (_isStarting)
+        {
+            if ((DateTime.Now - _startInitiated).TotalSeconds > 15)
+            {
+                _isStarting = false;
+            }
+            else
+            {
+                return;
+            }
+        }
+
+        // Case 1: Komorebi engine is offline -> Auto-resurrect entire stack
+        if (!komorebiAlive && AutoRecoverStack)
+        {
+            if ((DateTime.Now - _lastStackRecoveryAttempt).TotalSeconds < 10)
+                return;
+
+            _lastStackRecoveryAttempt = DateTime.Now;
+            AddLog("WARN", "Watchdog: komorebi process is down! Auto-restarting entire WM stack...");
+            StartAll();
+            RecoveryCount++;
+            LastRecoveryTime = DateTime.Now;
+            OnStackRecovered?.Invoke($"Komorebi stack automatically resurrected by Watchdog. Total recoveries: {RecoveryCount}");
+            return;
+        }
+
+        // Case 2: Komorebi is alive but bar is missing -> Auto-resurrect bar
+        if (komorebiAlive && !barAlive && AutoRecoverBar)
+        {
+            if ((DateTime.Now - _lastRecoveryAttempt).TotalSeconds < 5)
                 return;
 
             _lastRecoveryAttempt = DateTime.Now;
@@ -267,8 +312,11 @@ public class KomorebiManager
 
     public void StartAll()
     {
+        IsManuallyStopped = false;
+        _isStarting = true;
+        _startInitiated = DateTime.Now;
         AddLog("INFO", "Starting Komorebi Window Manager environment...");
-        RunDetachedScript(ResolveStartScriptPath(), "-DelayMilliseconds 100");
+        RunDetachedScript(ResolveStartScriptPath(), "-Restart -DelayMilliseconds 100");
     }
 
     private bool RecoverBarInternal()
@@ -301,6 +349,9 @@ public class KomorebiManager
 
     public void RestartAll()
     {
+        IsManuallyStopped = false;
+        _isStarting = true;
+        _startInitiated = DateTime.Now;
         AddLog("INFO", "User requested Full Restart (Nuke & Clean).");
         RunDetachedScript(ResolveStartScriptPath(), "-Restart -DelayMilliseconds 100");
     }
@@ -313,6 +364,7 @@ public class KomorebiManager
 
     public void StopAll()
     {
+        IsManuallyStopped = true;
         AddLog("INFO", "User requested Stop All WM Processes.");
         RunDetachedScript(ResolveStartScriptPath(), "-StopOnly -DelayMilliseconds 100");
     }
@@ -400,27 +452,41 @@ public class KomorebiManager
 
     private static void RunDetachedScript(string scriptPath, string arguments)
     {
-        var psi = new ProcessStartInfo
+        try
         {
-            FileName = "powershell.exe",
-            Arguments = $"-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File \"{scriptPath}\" {arguments}",
-            UseShellExecute = true,
-            CreateNoWindow = true,
-            WindowStyle = ProcessWindowStyle.Hidden
-        };
-        Process.Start(psi);
+            var psi = new ProcessStartInfo
+            {
+                FileName = "powershell.exe",
+                Arguments = $"-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File \"{scriptPath}\" {arguments}",
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                WindowStyle = ProcessWindowStyle.Hidden
+            };
+            Process.Start(psi);
+        }
+        catch (Exception ex)
+        {
+            Trace.WriteLine($"RunDetachedScript failed: {ex.Message}");
+        }
     }
 
     private static void RunPowershellCommand(string command)
     {
-        var psi = new ProcessStartInfo
+        try
         {
-            FileName = "powershell.exe",
-            Arguments = $"-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -Command \"{command}\"",
-            UseShellExecute = true,
-            CreateNoWindow = true,
-            WindowStyle = ProcessWindowStyle.Hidden
-        };
-        Process.Start(psi);
+            var psi = new ProcessStartInfo
+            {
+                FileName = "powershell.exe",
+                Arguments = $"-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -Command \"{command}\"",
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                WindowStyle = ProcessWindowStyle.Hidden
+            };
+            Process.Start(psi);
+        }
+        catch (Exception ex)
+        {
+            Trace.WriteLine($"RunPowershellCommand failed: {ex.Message}");
+        }
     }
 }

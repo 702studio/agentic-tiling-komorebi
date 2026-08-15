@@ -51,6 +51,15 @@ public class TrayApplicationContext : ApplicationContext
             UpdateTrayVisuals();
         };
 
+        _manager.OnStackRecovered += msg =>
+        {
+            if (_manager.ShowNotifications)
+            {
+                _notifyIcon.ShowBalloonTip(3500, "Komorebi Watchdog", msg, ToolTipIcon.Info);
+            }
+            UpdateTrayVisuals();
+        };
+
         _manager.OnHighGdiWarning += gdiCount =>
         {
             if (_manager.ShowNotifications)
@@ -143,10 +152,26 @@ public class TrayApplicationContext : ApplicationContext
         menu.Items.Add(_menuHeader);
         menu.Items.Add(new ToolStripSeparator());
 
-        var itemRestartAll = new ToolStripMenuItem("⚡ Quick Restart (Nuke & Clean)", null, (s, e) => _manager.RestartAll());
+        var itemStart = new ToolStripMenuItem("▶ Start / Resume Window Manager", null, (s, e) =>
+        {
+            if (_manager.ShowNotifications)
+            {
+                _notifyIcon.ShowBalloonTip(2000, "Komorebi Hub", "Starting Komorebi Window Manager...", ToolTipIcon.Info);
+            }
+            _manager.StartAll();
+        });
+        var itemRestartAll = new ToolStripMenuItem("⚡ Quick Restart (Nuke & Clean)", null, (s, e) =>
+        {
+            if (_manager.ShowNotifications)
+            {
+                _notifyIcon.ShowBalloonTip(2000, "Komorebi Hub", "Restarting Komorebi Window Manager...", ToolTipIcon.Info);
+            }
+            _manager.RestartAll();
+        });
         var itemRestartBar = new ToolStripMenuItem("🔄 Restart Bar Only (150ms)", null, (s, e) => _manager.RestartBarOnly());
         var itemPause = new ToolStripMenuItem("⏸️ Toggle Pause / Tiling", null, (s, e) => _manager.TogglePause());
 
+        menu.Items.Add(itemStart);
         menu.Items.Add(itemRestartAll);
         menu.Items.Add(itemRestartBar);
         menu.Items.Add(itemPause);
