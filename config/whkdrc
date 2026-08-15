@@ -2,6 +2,12 @@
 .pause alt + shift + p
 .pause_hook & "$env:USERPROFILE\bin\wm.ps1" pause-hook
 
+# Focus directional windows (Instant native socket navigation)
+alt + left : komorebic focus left
+alt + right : komorebic focus right
+alt + up : komorebic focus up
+alt + down : komorebic focus down
+
 # Workspace navigation (Instant zero-latency native socket calls)
 alt + j : komorebic cycle-workspace previous
 alt + k : komorebic cycle-workspace next
@@ -29,15 +35,16 @@ alt + y : & "$env:USERPROFILE\bin\wm.ps1" resize-mode
 alt + p : & "$env:USERPROFILE\bin\wm.ps1" preset pair
 alt + g : & "$env:USERPROFILE\bin\wm.ps1" preset grid
 
-# Layout and focused-window state
+# Layout and focused-window state (Instant 2ms direct calls)
 alt + shift + space : komorebic toggle-window-container-behaviour
 ctrl + alt + space : & "$env:USERPROFILE\bin\wm.ps1" layout next
 ctrl + alt + shift + space : & "$env:USERPROFILE\bin\wm.ps1" layout previous
 alt + oem_5 : komorebic toggle-workspace-layer
 alt + space : komorebic toggle-float
 alt + t : komorebic toggle-float
-alt + f : & "$env:USERPROFILE\bin\wm.ps1" fullscreen
-alt + n : & "$env:USERPROFILE\bin\wm.ps1" minimize
+alt + f : komorebic toggle-monocle
+alt + shift + f : komorebic toggle-maximize
+alt + n : komorebic minimize
 alt + q : komorebic close
 
 # Lifecycle and redraw
